@@ -1,4 +1,7 @@
 #! /bin/bash
+
+AWS_SANDBOX_PROFILE=$1
+PROJECT_NAME=$2
 aws --profile $AWS_SANDBOX_PROFILE logs tail "/aws/ecs/$PROJECT_NAME" --log-stream-name-prefix $PROJECT_NAME --format short --follow \
   | awk '{print $1}'
 
