@@ -3,4 +3,4 @@
 AWS_SANDBOX_PROFILE=$1
 PROJECT_NAME=$2
 unbuffer aws --profile $AWS_SANDBOX_PROFILE logs tail "/aws/ecs/$PROJECT_NAME" --log-stream-name-prefix $PROJECT_NAME --follow \
-  | awk '{printf("%s - %s\n", $1, $2); $1=""; $2=""; system("echo \x27" $0 "\x27 | jq ."); printf("========\n") }
+  | awk '{printf("%s - %s\n", $1, $2); $1=""; $2=""; system("echo \x27" $0 "\x27 | jq ."); printf("========\n") }'
