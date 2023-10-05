@@ -2,6 +2,18 @@
 
 AWS_SANDBOX_PROFILE=$1
 PROJECT_NAME=$2
+
+AWK='{
+  printf("%s - %s\n", $1, $2);
+  $1="";
+  $2="";
+  sub(/[\n\r]+/,"+",$0);
+  system("echo \x27" $0 "\x27 | tr -d \x27[:cntrl:]\x27 | jq \x27 . | { \x22timestamp\x22 : .timestamp, \x22level\x22 : .level, \x22logger\x22 : .loggerName, \x22thread\x22 : .threadName } \x27 ");
+  system("echo \x27" $0 "\x27 | tr -d \x27[:cntrl:]\x27 | jq \x27 .text  \x27 ");
+  system("echo \x27" $0 "\x27 | tr -d \x27[:cntrl:]\x27 | jq \x27 .stackTrace  \x27 | sed \x22s#\\\\\\\\n#\\n\t#g\x22 ");
+  printf("\n")
+}';
+
 unbuffer aws --profile $AWS_SANDBOX_PROFILE logs tail "/aws/ecs/$PROJECT_NAME" --log-stream-name-prefix $PROJECT_NAME --follow \
-  | awk '{printf("%s - %s\n", $1, $2); $1=""; $2=""; sub(/[\n\r]+/,"+",$0); system("echo \x27" $0 "\x27 | tr -d \x27[:cntrl:]\x27 | jq . "); printf("========\n") }' \
-  | sed "s#\\\\\\\\n#\\n\t#g"
+  | awk "$AWK" \
+#  | sed "s#\\\\\\\\n#\\n\t#g"
