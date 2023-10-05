@@ -4,7 +4,7 @@ AWS_SANDBOX_PROFILE=$1
 PROJECT_NAME=$2
 
 AWK='{
-  printf("%s - %s\n", $1, $2);
+  printf("%s\n", $2);
   $1="";
   $2="";
   sub(/[\n\r]+/,"+",$0);
